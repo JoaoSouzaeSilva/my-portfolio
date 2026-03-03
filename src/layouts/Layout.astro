@@ -1,0 +1,262 @@
+---
+interface Props {
+    title: string;
+    description?: string;
+}
+
+const { title, description = "João Souza e Silva — Software Engineer" } =
+    Astro.props;
+const currentPath = Astro.url.pathname;
+---
+
+<!doctype html>
+<html lang="en" class="scroll-smooth">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta name="description" content={description} />
+        <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap"
+            rel="stylesheet"
+        />
+        <title>{title}</title>
+    </head>
+    <body
+        class="bg-zinc-950 text-zinc-100 font-body min-h-screen flex flex-col antialiased"
+    >
+        <div class="grain" aria-hidden="true"></div>
+
+        <nav
+            class="fixed top-0 left-0 right-0 z-50 backdrop-blur-xl bg-zinc-950/70 border-b border-zinc-800/50"
+        >
+            <div
+                class="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between"
+            >
+                <a
+                    href="/"
+                    class="font-display font-800 text-xl tracking-tight hover:text-emerald-400 transition-colors duration-300"
+                >
+                    JSS<span class="text-emerald-400">.</span>
+                </a>
+
+                <div class="hidden md:flex items-center gap-8">
+                    {
+                        [
+                            { href: "/", label: "Home" },
+                            { href: "/about", label: "About" },
+                            { href: "/projects", label: "Projects" },
+                            { href: "/education", label: "Education" },
+                            { href: "/contact", label: "Contact" },
+                        ].map((link) => (
+                            <a
+                                href={link.href}
+                                class:list={[
+                                    "text-sm font-mono uppercase tracking-widest transition-colors duration-300 relative group",
+                                    currentPath === link.href
+                                        ? "text-emerald-400"
+                                        : "text-zinc-400 hover:text-zinc-100",
+                                ]}
+                            >
+                                {link.label}
+                                <span
+                                    class:list={[
+                                        "absolute -bottom-1 left-0 h-px bg-emerald-400 transition-all duration-300",
+                                        currentPath === link.href
+                                            ? "w-full"
+                                            : "w-0 group-hover:w-full",
+                                    ]}
+                                />
+                            </a>
+                        ))
+                    }
+                </div>
+
+                <button
+                    id="menu-toggle"
+                    class="md:hidden flex flex-col gap-1.5 p-2"
+                    aria-label="Toggle menu"
+                >
+                    <span
+                        class="block w-6 h-px bg-zinc-100 transition-transform duration-300 origin-center"
+                    ></span>
+                    <span
+                        class="block w-6 h-px bg-zinc-100 transition-opacity duration-300"
+                    ></span>
+                    <span
+                        class="block w-6 h-px bg-zinc-100 transition-transform duration-300 origin-center"
+                    ></span>
+                </button>
+            </div>
+
+            <div
+                id="mobile-menu"
+                class="md:hidden hidden border-t border-zinc-800/50 bg-zinc-950/95 backdrop-blur-xl"
+            >
+                <div class="flex flex-col px-6 py-4 gap-4">
+                    {
+                        [
+                            { href: "/", label: "Home" },
+                            { href: "/about", label: "About" },
+                            { href: "/projects", label: "Projects" },
+                            { href: "/education", label: "Education" },
+                            { href: "/contact", label: "Contact" },
+                        ].map((link) => (
+                            <a
+                                href={link.href}
+                                class:list={[
+                                    "text-sm font-mono uppercase tracking-widest py-2 transition-colors",
+                                    currentPath === link.href
+                                        ? "text-emerald-400"
+                                        : "text-zinc-400",
+                                ]}
+                            >
+                                {link.label}
+                            </a>
+                        ))
+                    }
+                </div>
+            </div>
+        </nav>
+
+        <main class="flex-1 pt-16">
+            <slot />
+        </main>
+
+        <footer class="border-t border-zinc-800/50 py-8 mt-20">
+            <div
+                class="max-w-6xl mx-auto px-6 flex flex-col md:flex-row items-center justify-between gap-4"
+            >
+                <p class="text-zinc-500 text-sm font-mono">
+                    &copy; {new Date().getFullYear()} João Souza e Silva
+                </p>
+                <div class="flex items-center gap-6">
+                    <a
+                        href="https://github.com/joaosouzaesilva"
+                        target="_blank"
+                        rel="noopener"
+                        class="text-zinc-500 hover:text-emerald-400 transition-colors text-sm font-mono"
+                    >
+                        GitHub
+                    </a>
+                    <a
+                        href="https://linkedin.com/in/joaosouzaesilva"
+                        target="_blank"
+                        rel="noopener"
+                        class="text-zinc-500 hover:text-emerald-400 transition-colors text-sm font-mono"
+                    >
+                        LinkedIn
+                    </a>
+                    <a
+                        href="mailto:joaosouzaesilva48@gmail.com"
+                        class="text-zinc-500 hover:text-emerald-400 transition-colors text-sm font-mono"
+                    >
+                        Email
+                    </a>
+                </div>
+            </div>
+        </footer>
+
+        <style is:global>
+            @tailwind base;
+            @tailwind components;
+            @tailwind utilities;
+
+            :root {
+                --color-accent: #34d399;
+            }
+
+            .font-display {
+                font-family: "Syne", sans-serif;
+            }
+            .font-body {
+                font-family: "Syne", sans-serif;
+            }
+            .font-mono {
+                font-family: "Space Mono", monospace;
+            }
+
+            .grain {
+                position: fixed;
+                inset: 0;
+                z-index: 9999;
+                pointer-events: none;
+                opacity: 0.03;
+                background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+                background-repeat: repeat;
+            }
+
+            @keyframes fadeSlideIn {
+                from {
+                    opacity: 0;
+                    transform: translateY(12px);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+
+            .animate-in {
+                animation: fadeSlideIn 0.6s ease-out both;
+            }
+            .animate-in-delay-1 {
+                animation: fadeSlideIn 0.6s ease-out 0.1s both;
+            }
+            .animate-in-delay-2 {
+                animation: fadeSlideIn 0.6s ease-out 0.2s both;
+            }
+            .animate-in-delay-3 {
+                animation: fadeSlideIn 0.6s ease-out 0.3s both;
+            }
+            .animate-in-delay-4 {
+                animation: fadeSlideIn 0.6s ease-out 0.4s both;
+            }
+
+            ::selection {
+                background-color: rgba(52, 211, 153, 0.3);
+                color: white;
+            }
+
+            ::-webkit-scrollbar {
+                width: 6px;
+            }
+            ::-webkit-scrollbar-track {
+                background: transparent;
+            }
+            ::-webkit-scrollbar-thumb {
+                background: #3f3f46;
+                border-radius: 3px;
+            }
+            ::-webkit-scrollbar-thumb:hover {
+                background: #52525b;
+            }
+        </style>
+
+        <script>
+            const toggle = document.getElementById("menu-toggle");
+            const menu = document.getElementById("mobile-menu");
+            const spans = toggle?.querySelectorAll("span");
+
+            toggle?.addEventListener("click", () => {
+                const isOpen = !menu?.classList.contains("hidden");
+                menu?.classList.toggle("hidden");
+                if (spans) {
+                    if (!isOpen) {
+                        spans[0].style.transform =
+                            "rotate(45deg) translateY(5px)";
+                        spans[1].style.opacity = "0";
+                        spans[2].style.transform =
+                            "rotate(-45deg) translateY(-5px)";
+                    } else {
+                        spans[0].style.transform = "";
+                        spans[1].style.opacity = "";
+                        spans[2].style.transform = "";
+                    }
+                }
+            });
+        </script>
+    </body>
+</html>
