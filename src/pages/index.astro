@@ -1,5 +1,11 @@
 ---
 import Portfolio from "../components/Portfolio";
+
+const siteUrl = "https://JoaoSouzaeSilva.github.io/my-portfolio";
+const title = "João Souza e Silva — Software Engineer";
+const description =
+    "Backend Java Developer building emission monitoring services at BMW. MSc in Computer Science from NOVA SST, based in Lisbon.";
+const ogImage = `${siteUrl}/og-image.png`;
 ---
 
 <!doctype html>
@@ -7,12 +13,43 @@ import Portfolio from "../components/Portfolio";
     <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+        <!-- Primary Meta -->
+        <title>{title}</title>
+        <meta name="description" content={description} />
+        <meta name="author" content="João Souza e Silva" />
         <meta
-            name="description"
-            content="João Souza e Silva — Backend Java Developer building emission services at BMW"
+            name="keywords"
+            content="Java, Backend Developer, Software Engineer, Spring Boot, Lisbon, BMW, Critical TechWorks"
         />
-        <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-        <title>João Souza e Silva — Software Engineer</title>
+        <meta name="theme-color" content="#09090b" />
+        <link rel="canonical" href={siteUrl} />
+
+        <!-- Open Graph / Facebook -->
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content={siteUrl} />
+        <meta property="og:title" content={title} />
+        <meta property="og:description" content={description} />
+        <meta property="og:image" content={ogImage} />
+        <meta property="og:locale" content="en_US" />
+        <meta property="og:site_name" content="João Souza e Silva" />
+
+        <!-- Twitter -->
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:url" content={siteUrl} />
+        <meta name="twitter:title" content={title} />
+        <meta name="twitter:description" content={description} />
+        <meta name="twitter:image" content={ogImage} />
+
+        <!-- Favicon -->
+        <link rel="icon" type="image/svg" href="/my-portfolio/favicon.svg" />
+        <link
+            rel="apple-touch-icon"
+            href="/my-portfolio/apple-touch-icon.png"
+        />
+
+        <!-- Sitemap -->
+        <link rel="sitemap" href="/my-portfolio/sitemap.xml" />
     </head>
     <body>
         <Portfolio client:load />
