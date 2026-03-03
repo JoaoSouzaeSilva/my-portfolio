@@ -11,5 +11,8 @@ export default defineConfig({
     plugins: [tailwindcss()]
   },
 
-  integrations: [react()]
+  integrations: [react()],
+
+  site: 'https://JoaoSouzaeSilva.github.io',
+  base: '/my-portfolio',
 });
