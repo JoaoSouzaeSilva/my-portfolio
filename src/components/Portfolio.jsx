@@ -471,18 +471,52 @@ export default function Portfolio() {
             <section id="experience" style={{ background: dark ? "#0f0f12" : "#f4f4f5", padding: "100px 0", transition: "background 0.5s" }}>
                 <div style={{ maxWidth: 1100, margin: "0 auto", padding: "0 24px" }}>
                     <Reveal>
-                        <p className="mono" style={{ color: accent, fontSize: 12, letterSpacing: "0.15em", textTransform: "uppercase", marginBottom: 12 }}>Experience</p>
-                        <h2 className="section-heading" style={{ fontWeight: 800, fontSize: "clamp(32px, 5vw, 52px)", letterSpacing: "-0.02em", marginBottom: 56 }}>Where I've worked</h2>
+                        <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", flexWrap: "wrap", gap: 20, marginBottom: 56 }}>
+                            <div>
+                                <p className="mono" style={{ color: accent, fontSize: 12, letterSpacing: "0.15em", textTransform: "uppercase", marginBottom: 12 }}>Experience</p>
+                                <h2 className="section-heading" style={{ fontWeight: 800, fontSize: "clamp(32px, 5vw, 52px)", letterSpacing: "-0.02em" }}>Where I've worked</h2>
+                            </div>
+                            <a
+                                href="/my-portfolio/cv-joao-souza-e-silva.pdf"
+                                download
+                                className="mono"
+                                style={{
+                                    display: "inline-flex", alignItems: "center", gap: 8,
+                                    padding: "12px 22px",
+                                    border: `1px solid ${subtle}`,
+                                    fontSize: 11, color: muted,
+                                    textDecoration: "none", letterSpacing: "0.08em", textTransform: "uppercase",
+                                    transition: "color 0.3s, border-color 0.3s, background 0.3s",
+                                    background: "transparent",
+                                    whiteSpace: "nowrap",
+                                }}
+                                onMouseEnter={(e) => {
+                                    e.currentTarget.style.color = accent;
+                                    e.currentTarget.style.borderColor = accent;
+                                    e.currentTarget.style.background = "rgba(16,185,129,0.06)";
+                                }}
+                                onMouseLeave={(e) => {
+                                    e.currentTarget.style.color = muted;
+                                    e.currentTarget.style.borderColor = subtle;
+                                    e.currentTarget.style.background = "transparent";
+                                }}
+                            >
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                    <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4" />
+                                    <polyline points="7 10 12 15 17 10" />
+                                    <line x1="12" y1="15" x2="12" y2="3" />
+                                </svg>
+                                Download CV
+                            </a>
+                        </div>
                     </Reveal>
 
                     <div style={{ position: "relative", paddingLeft: 40 }}>
-                        {/* Timeline line */}
                         <div style={{ position: "absolute", left: 6, top: 8, bottom: 8, width: 1, background: `linear-gradient(to bottom, ${accent}, ${subtle})`, transition: "background 0.5s" }} />
 
                         {EXPERIENCE.map((e, i) => (
                             <Reveal key={i} delay={i * 0.12}>
                                 <div style={{ marginBottom: i < EXPERIENCE.length - 1 ? 52 : 0, position: "relative" }}>
-                                    {/* Timeline dot */}
                                     <div style={{
                                         position: "absolute", left: -40, top: 6,
                                         width: 13, height: 13,
@@ -494,7 +528,6 @@ export default function Portfolio() {
                                         zIndex: 1,
                                     }} />
 
-                                    {/* Content */}
                                     <div
                                         style={{
                                             background: card,
@@ -507,7 +540,6 @@ export default function Portfolio() {
                                         onMouseEnter={(ev) => { ev.currentTarget.style.borderColor = accent; }}
                                         onMouseLeave={(ev) => { ev.currentTarget.style.borderColor = e.current ? "rgba(16,185,129,0.3)" : subtle; }}
                                     >
-                                        {/* Left accent bar */}
                                         <div style={{
                                             position: "absolute", top: 0, left: 0, width: 3, height: "100%",
                                             background: e.current ? accent : subtle,
@@ -546,6 +578,7 @@ export default function Portfolio() {
                                                 }}>{t}</span>
                                             ))}
                                         </div>
+
                                         {e.link && (
                                             <div style={{ marginTop: 16 }}>
                                                 <a href={e.link} target="_blank" rel="noopener noreferrer"
@@ -554,7 +587,11 @@ export default function Portfolio() {
                                                     onMouseEnter={(ev) => { ev.currentTarget.style.color = accent; }}
                                                     onMouseLeave={(ev) => { ev.currentTarget.style.color = muted; }}
                                                 >
-                                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6" /><polyline points="15 3 21 3 21 9" /><line x1="10" y1="14" x2="21" y2="3" /></svg>
+                                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                                        <path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6" />
+                                                        <polyline points="15 3 21 3 21 9" />
+                                                        <line x1="10" y1="14" x2="21" y2="3" />
+                                                    </svg>
                                                     Visit site →
                                                 </a>
                                             </div>
@@ -604,7 +641,6 @@ export default function Portfolio() {
                                     ))}
                                 </div>
 
-                                {/* Links row */}
                                 <div style={{ marginTop: 20, display: "flex", alignItems: "center", gap: 20 }}>
                                     {p.github && (
                                         <a href={p.github} target="_blank" rel="noopener noreferrer"
@@ -636,7 +672,6 @@ export default function Portfolio() {
                                     )}
                                 </div>
 
-                                {/* Expandable image preview */}
                                 {p.image && previewOpen[i] && (
                                     <div style={{
                                         marginTop: 24,
