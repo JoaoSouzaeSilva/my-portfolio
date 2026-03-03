@@ -3,6 +3,7 @@ import { useState, useEffect, useRef } from "react";
 const NAV_LINKS = [
     { href: "#home", label: "Home" },
     { href: "#about", label: "About" },
+    { href: "#experience", label: "Experience" },
     { href: "#projects", label: "Projects" },
     { href: "#education", label: "Education" },
     { href: "#contact", label: "Contact" },
@@ -16,41 +17,44 @@ const FRAMEWORKS_TOOLS = [
     "Spring Boot", "React", "Angular", "Flutter", "AWS", "PostgreSQL", "Scrum", "Git"
 ];
 
-const PROJECTS = [
+const EXPERIENCE = [
     {
-        title: "Critical TechWorks",
-        role: "Java Backend Developer — Critical TechWorks",
+        title: "Java Backend Developer",
+        company: "Critical TechWorks",
         period: "Oct 2025 — Present",
+        current: true,
         description: "Building backend services that monitor and optimize vehicle emission systems for BMW. Ensuring regulatory compliance, performance tracking, and sustainability.",
         tech: ["Java", "Spring Boot", "REST APIs", "Microservices"],
-        featured: true,
     },
     {
-        title: "Sandbit Platform",
-        role: "Fullstack Developer — Sandbit",
+        title: "Fullstack Developer",
+        company: "Sandbit",
         period: "Jan 2024 — Jul 2025",
+        current: false,
         description: "Started on the backend and progressively took ownership across the full stack — from API development to building features on the mobile app and desktop platform, while keeping the product aligned with delivery goals.",
         tech: ["JavaScript", "React", "Node.js", "Mobile", "Scrum"],
-        featured: true,
+        link: "https://sandbit.app/",
     },
     {
-        title: "Mercedes-Benz.io Backend",
-        role: "Backend Summer Intern",
+        title: "Backend Summer Intern",
+        company: "Mercedes-Benz.io",
         period: "Jul — Sep 2023",
+        current: false,
         description: "Developed efficient and scalable applications using Kotlin and Spring Boot with a focus on clean code and agile workflows.",
         tech: ["Kotlin", "Spring Boot", "Agile"],
-        featured: false,
     },
+];
+
+const PROJECTS = [
     {
         title: "Pinga",
         role: "Solo Developer — Side Project",
         period: "2025 — Present",
         description: "What started as a joke between friends turned into a fully-fledged social drinking tracker, now in beta. Built a cross-platform Flutter app and a Kotlin/Spring Boot REST backend from scratch — covering auth, real-time group sessions, notifications, drink logging, analytics, and automated DB archiving to Google Drive.",
         tech: ["Kotlin", "Spring Boot", "Flutter", "Dart", "PostgreSQL", "Firebase", "Docker", "Railway"],
-        featured: false,
-        personal: true,
         status: "Beta",
         github: "https://github.com/joaosouzaesilva",
+        image: "/my-portfolio/pinga-showcase.png",
     },
 ];
 
@@ -60,6 +64,10 @@ const EDUCATION = [
         school: "NOVA SST",
         year: "2022 — 2025",
         highlight: "17/20 · Software Engineering",
+        thesis: {
+            title: "Percept-This: Automated Approach to the Quality Evaluation of Modelling Languages Concrete Syntax",
+            summary: "Proposed a semi-automated, ontology-driven framework to evaluate the cognitive quality of visual modelling notations — applied to BPMN, i*, and Feature Diagrams. Encoded Physics of Notations principles in OML and queried them with SPARQL to make notation evaluation systematic, repeatable, and objective. Supervised by Prof. Miguel Goulão (NOVA SST) and Prof. Dominique Blouin (Télécom Paris).",
+        },
     },
     {
         degree: "BSc Computer Science & Engineering",
@@ -218,6 +226,7 @@ export default function Portfolio() {
     const [dark, setDark] = useState(true);
     const [menuOpen, setMenuOpen] = useState(false);
     const [activeSection, setActiveSection] = useState("home");
+    const [previewOpen, setPreviewOpen] = useState({});
 
     useEffect(() => {
         const obs = new IntersectionObserver(
@@ -252,6 +261,7 @@ export default function Portfolio() {
         @keyframes float { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-12px); } }
         @keyframes dash { to { stroke-dashoffset: 0; } }
         @keyframes marquee { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+        @keyframes fadeSlideIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         .marquee-track { animation: marquee 25s linear infinite; }
         .marquee-track:hover { animation-play-state: paused; }
         .card-hover { transition: transform 0.4s cubic-bezier(0.16,1,0.3,1), box-shadow 0.4s; }
@@ -373,8 +383,8 @@ export default function Portfolio() {
                     </Reveal>
                     <Reveal delay={0.3}>
                         <div style={{ display: "flex", gap: 16, flexWrap: "wrap" }}>
-                            <MagButton href="#projects" variant="primary" dark={dark}>
-                                View Projects
+                            <MagButton href="#experience" variant="primary" dark={dark}>
+                                View Work
                                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><path d="M5 12h14M12 5l7 7-7 7" /></svg>
                             </MagButton>
                             <MagButton href="#contact" variant="outline" dark={dark}>Get in Touch</MagButton>
@@ -446,7 +456,7 @@ export default function Portfolio() {
                                 </div>
                             </div>
                             <div style={{ marginTop: 36 }}>
-                                <p className="mono" style={{ fontSize: 10, color: muted, letterSpacing: "0.15em", textTransform: "uppercase", marginBottom: 16 }}>Languages</p>
+                                <p className="mono" style={{ fontSize: 10, color: muted, letterSpacing: "0.15em", textTransform: "uppercase", marginBottom: 16 }}>Spoken Languages</p>
                                 <div style={{ display: "flex", gap: 32 }}>
                                     <div><p style={{ fontWeight: 600, fontSize: 15 }}>Portuguese</p><p className="mono" style={{ fontSize: 11, color: muted }}>Native</p></div>
                                     <div><p style={{ fontWeight: 600, fontSize: 15 }}>English</p><p className="mono" style={{ fontSize: 11, color: muted }}>Fluent</p></div>
@@ -457,57 +467,98 @@ export default function Portfolio() {
                 </div>
             </section>
 
-            {/* ── PROJECTS ─────────────────────────────────────── */}
-            <section id="projects" style={{ background: dark ? "#0f0f12" : "#f4f4f5", padding: "100px 0", transition: "background 0.5s" }}>
+            {/* ── EXPERIENCE ───────────────────────────────────── */}
+            <section id="experience" style={{ background: dark ? "#0f0f12" : "#f4f4f5", padding: "100px 0", transition: "background 0.5s" }}>
                 <div style={{ maxWidth: 1100, margin: "0 auto", padding: "0 24px" }}>
                     <Reveal>
-                        <p className="mono" style={{ color: accent, fontSize: 12, letterSpacing: "0.15em", textTransform: "uppercase", marginBottom: 12 }}>Projects</p>
-                        <h2 className="section-heading" style={{ fontWeight: 800, fontSize: "clamp(32px, 5vw, 52px)", letterSpacing: "-0.02em", marginBottom: 48 }}>Selected work</h2>
+                        <p className="mono" style={{ color: accent, fontSize: 12, letterSpacing: "0.15em", textTransform: "uppercase", marginBottom: 12 }}>Experience</p>
+                        <h2 className="section-heading" style={{ fontWeight: 800, fontSize: "clamp(32px, 5vw, 52px)", letterSpacing: "-0.02em", marginBottom: 56 }}>Where I've worked</h2>
                     </Reveal>
-                    <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
-                        {PROJECTS.map((p, i) => (
-                            <Reveal key={i} delay={i * 0.1}>
-                                <div className="card-hover"
-                                    style={{ background: p.personal ? (dark ? "#0d1f17" : "#f0fdf7") : card, border: `1px solid ${p.personal ? "rgba(16,185,129,0.25)" : subtle}`, padding: "36px 40px", position: "relative", overflow: "hidden", cursor: "default", transition: "background 0.5s, border-color 0.3s" }}
-                                    onMouseEnter={(e) => { e.currentTarget.style.borderColor = accent; e.currentTarget.querySelector(".ab").style.transform = "scaleY(1)"; }}
-                                    onMouseLeave={(e) => { e.currentTarget.style.borderColor = p.personal ? "rgba(16,185,129,0.25)" : subtle; e.currentTarget.querySelector(".ab").style.transform = "scaleY(0)"; }}
-                                >
-                                    <div className="ab" style={{ position: "absolute", top: 0, left: 0, width: 3, height: "100%", background: accent, transformOrigin: "top", transform: "scaleY(0)", transition: "transform 0.5s cubic-bezier(0.16,1,0.3,1)" }} />
-                                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: 16 }}>
-                                        <div style={{ flex: 1, minWidth: 260 }}>
-                                            <div className="mono" style={{ display: "flex", gap: 12, fontSize: 10, color: muted, letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: 10, alignItems: "center", flexWrap: "wrap" }}>
-                                                {p.featured && <span style={{ color: accent }}>Featured</span>}
-                                                {p.personal && <span style={{ color: accent, border: "1px solid rgba(16,185,129,0.4)", padding: "2px 8px" }}>Personal Project</span>}
-                                                {p.status && (
-                                                    <span style={{ display: "inline-flex", alignItems: "center", gap: 5, color: accent, border: "1px solid rgba(16,185,129,0.4)", padding: "2px 8px" }}>
-                                                        <span style={{ width: 6, height: 6, borderRadius: "50%", background: accent, display: "inline-block", boxShadow: "0 0 6px rgba(16,185,129,0.8)" }} />
-                                                        {p.status}
-                                                    </span>
-                                                )}
-                                                <span>{p.period}</span>
-                                            </div>
-                                            <h3 style={{ fontWeight: 700, fontSize: 24, marginBottom: 6, letterSpacing: "-0.01em" }}>{p.title}</h3>
-                                            <p className="mono" style={{ fontSize: 12, color: muted, marginBottom: 14 }}>{p.role}</p>
-                                            <p style={{ color: muted, fontSize: 15, lineHeight: 1.7, maxWidth: 480 }}>{p.description}</p>
-                                            <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginTop: 18 }}>
-                                                {p.tech.map((t) => (
-                                                    <span key={t} className="mono" style={{ padding: "5px 12px", background: dark ? "rgba(39,39,42,0.6)" : "rgba(228,228,231,0.6)", fontSize: 10, color: muted, letterSpacing: "0.05em" }}>{t}</span>
-                                                ))}
-                                            </div>
-                                            {p.github && (
-                                                <div style={{ marginTop: 20 }}>
-                                                    <a href={p.github} target="_blank" rel="noopener noreferrer"
-                                                        className="mono"
-                                                        style={{ display: "inline-flex", alignItems: "center", gap: 6, fontSize: 11, color: muted, textDecoration: "none", letterSpacing: "0.08em", textTransform: "uppercase", transition: "color 0.3s" }}
-                                                        onMouseEnter={(e) => { e.currentTarget.style.color = accent; }}
-                                                        onMouseLeave={(e) => { e.currentTarget.style.color = muted; }}
-                                                    >
-                                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.477 2 2 6.477 2 12c0 4.418 2.865 8.166 6.839 9.489.5.092.682-.217.682-.482 0-.237-.009-.868-.013-1.703-2.782.604-3.369-1.342-3.369-1.342-.454-1.155-1.11-1.463-1.11-1.463-.908-.62.069-.608.069-.608 1.003.07 1.531 1.03 1.531 1.03.892 1.529 2.341 1.087 2.91.832.092-.647.35-1.087.636-1.337-2.22-.253-4.555-1.11-4.555-4.943 0-1.091.39-1.984 1.029-2.683-.103-.253-.446-1.27.098-2.647 0 0 .84-.269 2.75 1.025A9.578 9.578 0 0112 6.836c.85.004 1.705.115 2.504.337 1.909-1.294 2.747-1.025 2.747-1.025.546 1.377.202 2.394.1 2.647.64.699 1.028 1.592 1.028 2.683 0 3.842-2.339 4.687-4.566 4.935.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.743 0 .267.18.578.688.48C19.138 20.163 22 16.418 22 12c0-5.523-4.477-10-10-10z" /></svg>
-                                                        View on GitHub →
-                                                    </a>
+
+                    <div style={{ position: "relative", paddingLeft: 40 }}>
+                        {/* Timeline line */}
+                        <div style={{ position: "absolute", left: 6, top: 8, bottom: 8, width: 1, background: `linear-gradient(to bottom, ${accent}, ${subtle})`, transition: "background 0.5s" }} />
+
+                        {EXPERIENCE.map((e, i) => (
+                            <Reveal key={i} delay={i * 0.12}>
+                                <div style={{ marginBottom: i < EXPERIENCE.length - 1 ? 52 : 0, position: "relative" }}>
+                                    {/* Timeline dot */}
+                                    <div style={{
+                                        position: "absolute", left: -40, top: 6,
+                                        width: 13, height: 13,
+                                        background: e.current ? accent : (dark ? "#27272a" : "#e4e4e7"),
+                                        borderRadius: "50%",
+                                        border: `2px solid ${e.current ? accent : (dark ? "#3f3f46" : "#d4d4d8")}`,
+                                        boxShadow: e.current ? `0 0 12px rgba(16,185,129,0.5)` : "none",
+                                        transition: "background 0.5s, border-color 0.5s",
+                                        zIndex: 1,
+                                    }} />
+
+                                    {/* Content */}
+                                    <div
+                                        style={{
+                                            background: card,
+                                            border: `1px solid ${e.current ? "rgba(16,185,129,0.3)" : subtle}`,
+                                            padding: "28px 32px",
+                                            transition: "background 0.5s, border-color 0.3s",
+                                            position: "relative",
+                                            overflow: "hidden",
+                                        }}
+                                        onMouseEnter={(ev) => { ev.currentTarget.style.borderColor = accent; }}
+                                        onMouseLeave={(ev) => { ev.currentTarget.style.borderColor = e.current ? "rgba(16,185,129,0.3)" : subtle; }}
+                                    >
+                                        {/* Left accent bar */}
+                                        <div style={{
+                                            position: "absolute", top: 0, left: 0, width: 3, height: "100%",
+                                            background: e.current ? accent : subtle,
+                                            transition: "background 0.5s",
+                                        }} />
+
+                                        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: 12, marginBottom: 12 }}>
+                                            <div>
+                                                <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 4, flexWrap: "wrap" }}>
+                                                    <h3 style={{ fontWeight: 700, fontSize: 20, letterSpacing: "-0.01em" }}>{e.title}</h3>
+                                                    {e.current && (
+                                                        <span className="mono" style={{
+                                                            display: "inline-flex", alignItems: "center", gap: 5,
+                                                            fontSize: 10, color: accent,
+                                                            border: "1px solid rgba(16,185,129,0.4)",
+                                                            padding: "2px 8px", letterSpacing: "0.08em", textTransform: "uppercase",
+                                                        }}>
+                                                            <span style={{ width: 5, height: 5, borderRadius: "50%", background: accent, display: "inline-block", boxShadow: "0 0 6px rgba(16,185,129,0.8)" }} />
+                                                            Current
+                                                        </span>
+                                                    )}
                                                 </div>
-                                            )}
+                                                <p className="mono" style={{ fontSize: 13, color: accent, letterSpacing: "0.04em" }}>{e.company}</p>
+                                            </div>
+                                            <span className="mono" style={{ fontSize: 11, color: muted, letterSpacing: "0.08em", whiteSpace: "nowrap", paddingTop: 2 }}>{e.period}</span>
                                         </div>
+
+                                        <p style={{ color: muted, fontSize: 15, lineHeight: 1.7, marginBottom: 18, maxWidth: 560 }}>{e.description}</p>
+
+                                        <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
+                                            {e.tech.map((t) => (
+                                                <span key={t} className="mono" style={{
+                                                    padding: "4px 12px",
+                                                    background: dark ? "rgba(39,39,42,0.6)" : "rgba(228,228,231,0.6)",
+                                                    fontSize: 10, color: muted, letterSpacing: "0.05em",
+                                                }}>{t}</span>
+                                            ))}
+                                        </div>
+                                        {e.link && (
+                                            <div style={{ marginTop: 16 }}>
+                                                <a href={e.link} target="_blank" rel="noopener noreferrer"
+                                                    className="mono"
+                                                    style={{ display: "inline-flex", alignItems: "center", gap: 6, fontSize: 11, color: muted, textDecoration: "none", letterSpacing: "0.08em", textTransform: "uppercase", transition: "color 0.3s" }}
+                                                    onMouseEnter={(ev) => { ev.currentTarget.style.color = accent; }}
+                                                    onMouseLeave={(ev) => { ev.currentTarget.style.color = muted; }}
+                                                >
+                                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6" /><polyline points="15 3 21 3 21 9" /><line x1="10" y1="14" x2="21" y2="3" /></svg>
+                                                    Visit site →
+                                                </a>
+                                            </div>
+                                        )}
                                     </div>
                                 </div>
                             </Reveal>
@@ -516,25 +567,89 @@ export default function Portfolio() {
                 </div>
             </section>
 
-            {/* ── EDUCATION ────────────────────────────────────── */}
-            <section id="education" style={{ maxWidth: 1100, margin: "0 auto", padding: "100px 24px" }}>
+            {/* ── PROJECTS ─────────────────────────────────────── */}
+            <section id="projects" style={{ maxWidth: 1100, margin: "0 auto", padding: "100px 24px" }}>
                 <Reveal>
-                    <p className="mono" style={{ color: accent, fontSize: 12, letterSpacing: "0.15em", textTransform: "uppercase", marginBottom: 12 }}>Education</p>
-                    <h2 className="section-heading" style={{ fontWeight: 800, fontSize: "clamp(32px, 5vw, 52px)", letterSpacing: "-0.02em", marginBottom: 48 }}>Learning path</h2>
+                    <p className="mono" style={{ color: accent, fontSize: 12, letterSpacing: "0.15em", textTransform: "uppercase", marginBottom: 12 }}>Projects</p>
+                    <h2 className="section-heading" style={{ fontWeight: 800, fontSize: "clamp(32px, 5vw, 52px)", letterSpacing: "-0.02em", marginBottom: 48 }}>What I've built</h2>
                 </Reveal>
-                <div style={{ position: "relative", paddingLeft: 40 }}>
-                    <div style={{ position: "absolute", left: 6, top: 0, bottom: 0, width: 1, background: subtle, transition: "background 0.5s" }} />
-                    {EDUCATION.map((e, i) => (
-                        <Reveal key={i} delay={i * 0.15}>
-                            <div style={{ marginBottom: 48, position: "relative" }}>
-                                <div style={{ position: "absolute", left: -40, top: 6, width: 13, height: 13, background: accent, borderRadius: "50%", border: `3px solid ${bg}`, transition: "border-color 0.5s" }} />
-                                <p className="mono" style={{ fontSize: 11, color: accent, letterSpacing: "0.12em", textTransform: "uppercase", marginBottom: 8 }}>{e.year}</p>
-                                <h3 style={{ fontWeight: 700, fontSize: 24, marginBottom: 4, letterSpacing: "-0.01em" }}>{e.degree}</h3>
-                                <p className="mono" style={{ color: muted, fontSize: 13, marginBottom: 8 }}>{e.school}</p>
-                                {e.highlight && (
-                                    <span className="mono" style={{ display: "inline-block", padding: "5px 14px", background: dark ? "#1c1c1f" : "#f4f4f5", border: `1px solid ${subtle}`, fontSize: 11, color: muted, transition: "background 0.5s, border-color 0.5s" }}>
-                                        {e.highlight}
-                                    </span>
+                <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
+                    {PROJECTS.map((p, i) => (
+                        <Reveal key={i} delay={i * 0.1}>
+                            <div className="card-hover"
+                                style={{ background: dark ? "#0d1f17" : "#f0fdf7", border: `1px solid rgba(16,185,129,0.25)`, padding: "36px 40px", position: "relative", overflow: "hidden", cursor: "default", transition: "background 0.5s, border-color 0.3s" }}
+                                onMouseEnter={(e) => { e.currentTarget.style.borderColor = accent; e.currentTarget.querySelector(".ab").style.transform = "scaleY(1)"; }}
+                                onMouseLeave={(e) => { e.currentTarget.style.borderColor = "rgba(16,185,129,0.25)"; e.currentTarget.querySelector(".ab").style.transform = "scaleY(0)"; }}
+                            >
+                                <div className="ab" style={{ position: "absolute", top: 0, left: 0, width: 3, height: "100%", background: accent, transformOrigin: "top", transform: "scaleY(0)", transition: "transform 0.5s cubic-bezier(0.16,1,0.3,1)" }} />
+
+                                <div className="mono" style={{ display: "flex", gap: 12, fontSize: 10, color: muted, letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: 10, alignItems: "center", flexWrap: "wrap" }}>
+                                    <span style={{ color: accent, border: "1px solid rgba(16,185,129,0.4)", padding: "2px 8px" }}>Personal Project</span>
+                                    {p.status && (
+                                        <span style={{ display: "inline-flex", alignItems: "center", gap: 5, color: accent, border: "1px solid rgba(16,185,129,0.4)", padding: "2px 8px" }}>
+                                            <span style={{ width: 6, height: 6, borderRadius: "50%", background: accent, display: "inline-block", boxShadow: "0 0 6px rgba(16,185,129,0.8)" }} />
+                                            {p.status}
+                                        </span>
+                                    )}
+                                    <span>{p.period}</span>
+                                </div>
+
+                                <h3 style={{ fontWeight: 700, fontSize: 24, marginBottom: 6, letterSpacing: "-0.01em" }}>{p.title}</h3>
+                                <p className="mono" style={{ fontSize: 12, color: muted, marginBottom: 14 }}>{p.role}</p>
+                                <p style={{ color: muted, fontSize: 15, lineHeight: 1.7, maxWidth: 600 }}>{p.description}</p>
+
+                                <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginTop: 18 }}>
+                                    {p.tech.map((t) => (
+                                        <span key={t} className="mono" style={{ padding: "5px 12px", background: dark ? "rgba(39,39,42,0.6)" : "rgba(228,228,231,0.6)", fontSize: 10, color: muted, letterSpacing: "0.05em" }}>{t}</span>
+                                    ))}
+                                </div>
+
+                                {/* Links row */}
+                                <div style={{ marginTop: 20, display: "flex", alignItems: "center", gap: 20 }}>
+                                    {p.github && (
+                                        <a href={p.github} target="_blank" rel="noopener noreferrer"
+                                            className="mono"
+                                            style={{ display: "inline-flex", alignItems: "center", gap: 6, fontSize: 11, color: muted, textDecoration: "none", letterSpacing: "0.08em", textTransform: "uppercase", transition: "color 0.3s" }}
+                                            onMouseEnter={(e) => { e.currentTarget.style.color = accent; }}
+                                            onMouseLeave={(e) => { e.currentTarget.style.color = muted; }}
+                                        >
+                                            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.477 2 2 6.477 2 12c0 4.418 2.865 8.166 6.839 9.489.5.092.682-.217.682-.482 0-.237-.009-.868-.013-1.703-2.782.604-3.369-1.342-3.369-1.342-.454-1.155-1.11-1.463-1.11-1.463-.908-.62.069-.608.069-.608 1.003.07 1.531 1.03 1.531 1.03.892 1.529 2.341 1.087 2.91.832.092-.647.35-1.087.636-1.337-2.22-.253-4.555-1.11-4.555-4.943 0-1.091.39-1.984 1.029-2.683-.103-.253-.446-1.27.098-2.647 0 0 .84-.269 2.75 1.025A9.578 9.578 0 0112 6.836c.85.004 1.705.115 2.504.337 1.909-1.294 2.747-1.025 2.747-1.025.546 1.377.202 2.394.1 2.647.64.699 1.028 1.592 1.028 2.683 0 3.842-2.339 4.687-4.566 4.935.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.743 0 .267.18.578.688.48C19.138 20.163 22 16.418 22 12c0-5.523-4.477-10-10-10z" /></svg>
+                                            View on GitHub →
+                                        </a>
+                                    )}
+                                    {p.image && (
+                                        <button
+                                            onClick={() => setPreviewOpen(prev => ({ ...prev, [i]: !prev[i] }))}
+                                            className="mono"
+                                            style={{ display: "inline-flex", alignItems: "center", gap: 6, fontSize: 11, color: muted, background: "none", border: "none", cursor: "pointer", letterSpacing: "0.08em", textTransform: "uppercase", padding: 0, transition: "color 0.3s" }}
+                                            onMouseEnter={(e) => { e.currentTarget.style.color = accent; }}
+                                            onMouseLeave={(e) => { e.currentTarget.style.color = muted; }}
+                                        >
+                                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                                {previewOpen[i]
+                                                    ? <><path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94" /><path d="M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19" /><line x1="1" y1="1" x2="23" y2="23" /></>
+                                                    : <><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" /><circle cx="12" cy="12" r="3" /></>
+                                                }
+                                            </svg>
+                                            {previewOpen[i] ? "Hide preview ↑" : "Preview app →"}
+                                        </button>
+                                    )}
+                                </div>
+
+                                {/* Expandable image preview */}
+                                {p.image && previewOpen[i] && (
+                                    <div style={{
+                                        marginTop: 24,
+                                        borderTop: `1px solid ${subtle}`,
+                                        paddingTop: 24,
+                                        animation: "fadeSlideIn 0.4s cubic-bezier(0.16,1,0.3,1)",
+                                    }}>
+                                        <img
+                                            src={p.image}
+                                            alt={`${p.title} app preview`}
+                                            style={{ width: "100%", display: "block", border: `1px solid ${subtle}` }}
+                                        />
+                                    </div>
                                 )}
                             </div>
                         </Reveal>
@@ -542,47 +657,86 @@ export default function Portfolio() {
                 </div>
             </section>
 
-            {/* ── CONTACT ──────────────────────────────────────── */}
-            <section id="contact" style={{ background: dark ? "#0f0f12" : "#f4f4f5", padding: "100px 0", transition: "background 0.5s" }}>
+            {/* ── EDUCATION ────────────────────────────────────── */}
+            <section id="education" style={{ background: dark ? "#0f0f12" : "#f4f4f5", padding: "100px 0", transition: "background 0.5s" }}>
                 <div style={{ maxWidth: 1100, margin: "0 auto", padding: "0 24px" }}>
                     <Reveal>
-                        <p className="mono" style={{ color: accent, fontSize: 12, letterSpacing: "0.15em", textTransform: "uppercase", marginBottom: 12 }}>Contact</p>
-                        <h2 className="section-heading" style={{ fontWeight: 800, fontSize: "clamp(32px, 5vw, 52px)", letterSpacing: "-0.02em", marginBottom: 16 }}>Let's connect</h2>
-                        <p style={{ color: muted, fontSize: 18, marginBottom: 48, maxWidth: 480 }}>Got an idea, a question, or just want to say hi? I'd love to hear from you.</p>
+                        <p className="mono" style={{ color: accent, fontSize: 12, letterSpacing: "0.15em", textTransform: "uppercase", marginBottom: 12 }}>Education</p>
+                        <h2 className="section-heading" style={{ fontWeight: 800, fontSize: "clamp(32px, 5vw, 52px)", letterSpacing: "-0.02em", marginBottom: 48 }}>Learning path</h2>
                     </Reveal>
-                    <div className="grid-responsive" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 60 }}>
-                        <Reveal delay={0.1}>
-                            <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
-                                {[
-                                    { label: "Email", value: "joaosouzaesilva48@gmail.com", href: "mailto:joaosouzaesilva48@gmail.com" },
-                                    { label: "LinkedIn", value: "joaosouzaesilva", href: "https://linkedin.com/in/joaosouzaesilva" },
-                                    { label: "GitHub", value: "joaosouzaesilva", href: "https://github.com/joaosouzaesilva" },
-                                ].map((c) => (
-                                    <div key={c.label}>
-                                        <p className="mono" style={{ fontSize: 10, color: muted, letterSpacing: "0.15em", textTransform: "uppercase", marginBottom: 6 }}>{c.label}</p>
-                                        <a href={c.href} target="_blank" rel="noopener noreferrer"
-                                            style={{ color: text, textDecoration: "none", fontSize: 15, transition: "color 0.3s" }}
-                                            onMouseEnter={(e) => (e.target.style.color = accent)}
-                                            onMouseLeave={(e) => (e.target.style.color = text)}
-                                        >{c.value} →</a>
-                                    </div>
-                                ))}
-                                <div>
-                                    <p className="mono" style={{ fontSize: 10, color: muted, letterSpacing: "0.15em", textTransform: "uppercase", marginBottom: 6 }}>Location</p>
-                                    <p style={{ fontSize: 15 }}>Lisbon, Portugal</p>
+                    <div style={{ position: "relative", paddingLeft: 40 }}>
+                        <div style={{ position: "absolute", left: 6, top: 0, bottom: 0, width: 1, background: subtle, transition: "background 0.5s" }} />
+                        {EDUCATION.map((e, i) => (
+                            <Reveal key={i} delay={i * 0.15}>
+                                <div style={{ marginBottom: 48, position: "relative" }}>
+                                    <div style={{ position: "absolute", left: -40, top: 6, width: 13, height: 13, background: accent, borderRadius: "50%", border: `3px solid ${dark ? "#0f0f12" : "#f4f4f5"}`, transition: "border-color 0.5s" }} />
+                                    <p className="mono" style={{ fontSize: 11, color: accent, letterSpacing: "0.12em", textTransform: "uppercase", marginBottom: 8 }}>{e.year}</p>
+                                    <h3 style={{ fontWeight: 700, fontSize: 24, marginBottom: 4, letterSpacing: "-0.01em" }}>{e.degree}</h3>
+                                    <p className="mono" style={{ color: muted, fontSize: 13, marginBottom: 8 }}>{e.school}</p>
+                                    {e.highlight && (
+                                        <span className="mono" style={{ display: "inline-block", padding: "5px 14px", background: dark ? "#1c1c1f" : "#f4f4f5", border: `1px solid ${subtle}`, fontSize: 11, color: muted, transition: "background 0.5s, border-color 0.5s" }}>
+                                            {e.highlight}
+                                        </span>
+                                    )}
+                                    {e.thesis && (
+                                        <div style={{ marginTop: 20, paddingTop: 20, borderTop: `1px solid ${subtle}` }}>
+                                            <p className="mono" style={{ fontSize: 10, color: muted, letterSpacing: "0.15em", textTransform: "uppercase", marginBottom: 10 }}>
+                                                MSc Thesis
+                                            </p>
+                                            <p style={{ fontWeight: 600, fontSize: 14, marginBottom: 8, lineHeight: 1.5, color: text }}>
+                                                {e.thesis.title}
+                                            </p>
+                                            <p style={{ fontSize: 14, color: muted, lineHeight: 1.7 }}>
+                                                {e.thesis.summary}
+                                            </p>
+                                        </div>
+                                    )}
                                 </div>
-                            </div>
-                        </Reveal>
-                        <Reveal delay={0.2}>
-                            <div style={{ border: `1px solid ${subtle}`, padding: 32, background: card, transition: "background 0.5s, border-color 0.5s" }}>
-                                <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 12 }}>
-                                    <div style={{ width: 8, height: 8, background: accent, borderRadius: "50%", boxShadow: "0 0 12px rgba(16,185,129,0.5)" }} />
-                                    <p className="mono" style={{ fontSize: 11, color: accent, letterSpacing: "0.1em", textTransform: "uppercase" }}>Open to opportunities</p>
-                                </div>
-                                <p style={{ color: muted, fontSize: 14, lineHeight: 1.7 }}>Always interested in challenging backend roles and interesting engineering problems. Let's talk.</p>
-                            </div>
-                        </Reveal>
+                            </Reveal>
+                        ))}
                     </div>
+                </div>
+            </section>
+
+            {/* ── CONTACT ──────────────────────────────────────── */}
+            <section id="contact" style={{ maxWidth: 1100, margin: "0 auto", padding: "100px 24px" }}>
+                <Reveal>
+                    <p className="mono" style={{ color: accent, fontSize: 12, letterSpacing: "0.15em", textTransform: "uppercase", marginBottom: 12 }}>Contact</p>
+                    <h2 className="section-heading" style={{ fontWeight: 800, fontSize: "clamp(32px, 5vw, 52px)", letterSpacing: "-0.02em", marginBottom: 16 }}>Let's connect</h2>
+                    <p style={{ color: muted, fontSize: 18, marginBottom: 48, maxWidth: 480 }}>Got an idea, a question, or just want to say hi? I'd love to hear from you.</p>
+                </Reveal>
+                <div className="grid-responsive" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 60 }}>
+                    <Reveal delay={0.1}>
+                        <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
+                            {[
+                                { label: "Email", value: "joaosouzaesilva48@gmail.com", href: "mailto:joaosouzaesilva48@gmail.com" },
+                                { label: "LinkedIn", value: "joaosouzaesilva", href: "https://linkedin.com/in/joaosouzaesilva" },
+                                { label: "GitHub", value: "joaosouzaesilva", href: "https://github.com/joaosouzaesilva" },
+                            ].map((c) => (
+                                <div key={c.label}>
+                                    <p className="mono" style={{ fontSize: 10, color: muted, letterSpacing: "0.15em", textTransform: "uppercase", marginBottom: 6 }}>{c.label}</p>
+                                    <a href={c.href} target="_blank" rel="noopener noreferrer"
+                                        style={{ color: text, textDecoration: "none", fontSize: 15, transition: "color 0.3s" }}
+                                        onMouseEnter={(e) => (e.target.style.color = accent)}
+                                        onMouseLeave={(e) => (e.target.style.color = text)}
+                                    >{c.value} →</a>
+                                </div>
+                            ))}
+                            <div>
+                                <p className="mono" style={{ fontSize: 10, color: muted, letterSpacing: "0.15em", textTransform: "uppercase", marginBottom: 6 }}>Location</p>
+                                <p style={{ fontSize: 15 }}>Lisbon, Portugal</p>
+                            </div>
+                        </div>
+                    </Reveal>
+                    <Reveal delay={0.2}>
+                        <div style={{ border: `1px solid ${subtle}`, padding: 32, background: card, transition: "background 0.5s, border-color 0.5s" }}>
+                            <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 12 }}>
+                                <div style={{ width: 8, height: 8, background: accent, borderRadius: "50%", boxShadow: "0 0 12px rgba(16,185,129,0.5)" }} />
+                                <p className="mono" style={{ fontSize: 11, color: accent, letterSpacing: "0.1em", textTransform: "uppercase" }}>Open to opportunities</p>
+                            </div>
+                            <p style={{ color: muted, fontSize: 14, lineHeight: 1.7 }}>Always interested in challenging backend roles and interesting engineering problems. Let's talk.</p>
+                        </div>
+                    </Reveal>
                 </div>
             </section>
 
