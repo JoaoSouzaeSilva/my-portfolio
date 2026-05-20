@@ -19,11 +19,19 @@ const FRAMEWORKS_TOOLS = [
 
 const EXPERIENCE = [
     {
+        title: "Junior Software Engineer",
+        company: "ComplyAdvantage",
+        period: "May 2026 — Present",
+        current: true,
+        description: "On the Migration Tooling team, building backend services and internal tooling that enable reliable, scalable, and automated system migrations. Working with Kafka and AWS while leveraging Docker, Grafana, and ArgoCD to improve deployment, monitoring, and operational efficiency.",
+        tech: ["Kotlin", "Spring Boot", "Kafka", "AWS", "Docker", "Grafana", "ArgoCD"],
+    },
+    {
         title: "Java Backend Developer",
         company: "Critical TechWorks",
-        period: "Oct 2025 — Present",
-        current: true,
-        description: "Building backend services that monitor and optimize vehicle emission systems for BMW. Ensuring regulatory compliance, performance tracking, and sustainability.",
+        period: "Oct 2025 — Apr 2026",
+        current: false,
+        description: "Built backend services that monitor and optimize vehicle emission systems for BMW. Ensuring regulatory compliance, performance tracking, and sustainability.",
         tech: ["Java", "Spring Boot", "REST APIs", "Microservices"],
     },
     {
@@ -362,7 +370,7 @@ export default function Portfolio() {
                 <div style={{ maxWidth: 1100, margin: "0 auto", padding: "120px 24px 80px", width: "100%", position: "relative", zIndex: 1 }}>
                     <Reveal>
                         <p className="mono" style={{ color: accent, fontSize: 13, letterSpacing: "0.15em", textTransform: "uppercase", marginBottom: 20 }}>
-                            Backend Java Developer
+                            Junior Software Engineer
                         </p>
                     </Reveal>
                     <Reveal delay={0.1}>
@@ -378,7 +386,7 @@ export default function Portfolio() {
                     </Reveal>
                     <Reveal delay={0.2}>
                         <p style={{ color: muted, fontSize: "clamp(16px, 2vw, 20px)", maxWidth: 520, lineHeight: 1.7, marginBottom: 36 }}>
-                            I build robust backend systems and APIs with Java. Currently engineering emission services at BMW, turning complex regulatory requirements into clean, scalable solutions.
+                            I build robust backend services and internal tooling with Kotlin and Java. Currently at ComplyAdvantage on the Migration Tooling team, enabling reliable and scalable automated system migrations.
                         </p>
                     </Reveal>
                     <Reveal delay={0.3}>
@@ -404,8 +412,8 @@ export default function Portfolio() {
                 <div className="marquee-track" style={{ display: "flex", gap: 80, whiteSpace: "nowrap", width: "max-content" }}>
                     {[...Array(2)].flatMap((_, i) =>
                         [
-                            { v: "2+", l: "Years Experience" }, { v: "3", l: "Companies" }, { v: "MSc", l: "CS & Engineering" },
-                            { v: "12+", l: "Years Handball" }, { v: "Java", l: "Primary Language" }, { v: "CTW", l: "Current Company" },
+                            { v: "3+", l: "Years Experience" }, { v: "4", l: "Companies" }, { v: "MSc", l: "CS & Engineering" },
+                            { v: "12+", l: "Years Handball" }, { v: "Kotlin", l: "Primary Language" }, { v: "CA", l: "Current Company" },
                         ].map((s, j) => (
                             <div key={`${i}-${j}`} style={{ display: "flex", alignItems: "center", gap: 12 }}>
                                 <span style={{ fontWeight: 800, fontSize: 28, color: accent }}>{s.v}</span>
@@ -426,7 +434,7 @@ export default function Portfolio() {
                 <div className="grid-responsive" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 60 }}>
                     <Reveal delay={0.1}>
                         <div style={{ display: "flex", flexDirection: "column", gap: 20, color: muted, fontSize: 16, lineHeight: 1.8 }}>
-                            <p>I'm a software engineer based in Lisbon, Portugal, with a passion for building reliable, performant backend systems. Currently at Critical TechWorks, I develop the services powering BMW's vehicle emission monitoring — where precision engineering and clean code go hand in hand.</p>
+                            <p>I'm a software engineer based in Lisbon, Portugal, with a passion for building reliable, performant backend systems. Currently at ComplyAdvantage on the Migration Tooling team, I build backend services and internal tooling that enable reliable, scalable, and automated system migrations.</p>
                             <p>My path started with a curiosity for programming in high school, leading me to both a BSc and MSc in Computer Science at NOVA SST. Along the way, I interned at Mercedes-Benz.io with Kotlin and Spring Boot, and spent time as a fullstack developer at Sandbit.</p>
                             <p>Beyond code, I've been a competitive handball player since 2013 and coached kids for five years. Sports taught me discipline, teamwork, and how to stay calm under pressure — skills that translate directly into how I approach software.</p>
                         </div>
@@ -765,11 +773,7 @@ export default function Portfolio() {
                     </Reveal>
                     <Reveal delay={0.2}>
                         <div style={{ border: `1px solid ${subtle}`, padding: 32, background: card, transition: "background 0.5s, border-color 0.5s" }}>
-                            <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 12 }}>
-                                <div style={{ width: 8, height: 8, background: accent, borderRadius: "50%", boxShadow: "0 0 12px rgba(16,185,129,0.5)" }} />
-                                <p className="mono" style={{ fontSize: 11, color: accent, letterSpacing: "0.1em", textTransform: "uppercase" }}>Open to opportunities</p>
-                            </div>
-                            <p style={{ color: muted, fontSize: 14, lineHeight: 1.7 }}>Always interested in challenging backend roles and interesting engineering problems. Let's talk.</p>
+                            <p style={{ color: muted, fontSize: 14, lineHeight: 1.7 }}>Always open to interesting engineering conversations and challenging problems. Let's talk.</p>
                         </div>
                     </Reveal>
                 </div>
