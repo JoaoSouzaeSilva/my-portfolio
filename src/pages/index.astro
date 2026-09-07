@@ -4,8 +4,11 @@ import Portfolio from "../components/Portfolio";
 const siteUrl = "https://JoaoSouzaeSilva.github.io/my-portfolio";
 const title = "João Souza e Silva — Software Engineer";
 const description =
-    "Backend Java Developer building emission monitoring services at BMW. MSc in Computer Science from NOVA SST, based in Lisbon.";
+    "Software engineer building distributed systems in the financial crime and automotive compliance domains — Java, Kotlin and Spring Boot on AWS. Currently at ComplyAdvantage. MSc in Computer Science from NOVA SST, based in Lisbon.";
 const ogImage = `${siteUrl}/og-image.png`;
+
+const rawBase = import.meta.env.BASE_URL || "/";
+const base = rawBase.endsWith("/") ? rawBase : `${rawBase}/`;
 ---
 
 <!doctype html>
@@ -20,7 +23,7 @@ const ogImage = `${siteUrl}/og-image.png`;
         <meta name="author" content="João Souza e Silva" />
         <meta
             name="keywords"
-            content="Java, Backend Developer, Software Engineer, Spring Boot, Lisbon, BMW, Critical TechWorks"
+            content="Java, Kotlin, Backend Developer, Software Engineer, Spring Boot, Kubernetes, AWS, PostgreSQL, Lisbon, ComplyAdvantage, Critical TechWorks, BMW"
         />
         <meta name="theme-color" content="#09090b" />
         <link rel="canonical" href={siteUrl} />
@@ -42,14 +45,12 @@ const ogImage = `${siteUrl}/og-image.png`;
         <meta name="twitter:image" content={ogImage} />
 
         <!-- Favicon -->
-        <link rel="icon" type="image/svg" href="/my-portfolio/favicon.svg" />
-        <link
-            rel="apple-touch-icon"
-            href="/my-portfolio/apple-touch-icon.png"
-        />
+        <link rel="icon" type="image/svg+xml" href={`${base}favicon.svg`} />
+        <link rel="alternate icon" href={`${base}favicon.ico`} />
+        <link rel="apple-touch-icon" href={`${base}favicon.svg`} />
 
         <!-- Sitemap -->
-        <link rel="sitemap" href="/my-portfolio/sitemap.xml" />
+        <link rel="sitemap" href={`${base}sitemap.xml`} />
     </head>
     <body>
         <Portfolio client:load />

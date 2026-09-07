@@ -1,5 +1,9 @@
 import { useState, useEffect, useRef } from "react";
 
+/* Base path for static assets — respects astro.config.mjs `base`. */
+const RAW_BASE = import.meta.env.BASE_URL || "/";
+const BASE = RAW_BASE.endsWith("/") ? RAW_BASE : `${RAW_BASE}/`;
+
 const NAV_LINKS = [
     { href: "#home", label: "Home" },
     { href: "#about", label: "About" },
@@ -10,46 +14,55 @@ const NAV_LINKS = [
 ];
 
 const LANGUAGES = [
-    "Java", "Kotlin", "JavaScript", "TypeScript", "Python", "HTML/CSS"
+    "Java", "Kotlin", "JavaScript", "SQL", "Dart"
 ];
 
 const FRAMEWORKS_TOOLS = [
-    "Spring Boot", "React", "Angular", "Flutter", "AWS", "PostgreSQL", "Scrum", "Git"
+    "Spring Boot", "REST APIs", "PostgreSQL", "Docker", "Kubernetes", "AWS", "React", "Git"
 ];
 
 const EXPERIENCE = [
     {
-        title: "Junior Software Engineer",
+        title: "Software Engineer",
         company: "ComplyAdvantage",
         period: "May 2026 — Present",
         current: true,
-        description: "On the Migration Tooling team, building backend services and internal tooling that enable reliable, scalable, and automated system migrations. Working with Kafka and AWS while leveraging Docker, Grafana, and ArgoCD to improve deployment, monitoring, and operational efficiency.",
-        tech: ["Kotlin", "Spring Boot", "Kafka", "AWS", "Docker", "Grafana", "ArgoCD"],
+        description: "On the Migration Tooling team, building the compatibility layer that lets existing customers move onto the company's next-generation screening platform without changing their own API integrations. Shipped endpoints matching the legacy API contract exactly, and defined the model the team uses to sequence that work — prioritising by which customers each endpoint unlocks rather than by revenue.",
+        tech: ["Kotlin", "Java", "Spring Boot", "REST APIs", "AWS", "Docker"],
     },
     {
         title: "Java Backend Developer",
         company: "Critical TechWorks",
         period: "Oct 2025 — Apr 2026",
         current: false,
-        description: "Built backend services that monitor and optimize vehicle emission systems for BMW. Ensuring regulatory compliance, performance tracking, and sustainability.",
-        tech: ["Java", "Spring Boot", "REST APIs", "Microservices"],
+        description: "Built and maintained Java services for the BMW Group's Emissions Services platform, which processes vehicle emissions data at the scale of a production fleet. Cloud-native throughout: Docker and Kubernetes on AWS, PostgreSQL for storage, deployed on Payara.",
+        tech: ["Java", "Spring Boot", "PostgreSQL", "Docker", "Kubernetes", "AWS", "Payara"],
     },
     {
-        title: "Fullstack Developer",
+        title: "Software Developer",
         company: "Sandbit",
         period: "Jan 2024 — Jul 2025",
         current: false,
-        description: "Started on the backend and progressively took ownership across the full stack — from API development to building features on the mobile app and desktop platform, while keeping the product aligned with delivery goals.",
-        tech: ["JavaScript", "React", "Node.js", "Mobile", "Scrum"],
+        description: "Part-time role on the team building the Sandbit platform, working across the codebase and owning technical documentation for the product as it was delivered.",
+        tech: ["JavaScript", "React", "Node.js", "Technical Writing"],
         link: "https://sandbit.app/",
+    },
+    {
+        title: "Handball Coach",
+        company: "Colégio São João de Brito",
+        period: "Oct 2020 — Jun 2025",
+        current: false,
+        offPitch: true,
+        description: "Coached children aged five to twelve for five seasons, running weekly training and match days. Played handball at national level for over ten years across six clubs, including Os Belenenses and AEFCT NOVA.",
+        tech: ["Coaching", "Mentoring", "Teamwork"],
     },
     {
         title: "Backend Summer Intern",
         company: "Mercedes-Benz.io",
         period: "Jul — Sep 2023",
         current: false,
-        description: "Developed efficient and scalable applications using Kotlin and Spring Boot with a focus on clean code and agile workflows.",
-        tech: ["Kotlin", "Spring Boot", "Agile"],
+        description: "Built and tested backend services in Kotlin and Spring Boot alongside the platform team.",
+        tech: ["Kotlin", "Spring Boot", "Testing"],
     },
 ];
 
@@ -62,7 +75,7 @@ const PROJECTS = [
         tech: ["Kotlin", "Spring Boot", "Flutter", "Dart", "PostgreSQL", "Firebase", "Docker", "Railway"],
         status: "Beta",
         github: "https://github.com/joaosouzaesilva",
-        image: "/my-portfolio/pinga-showcase.png",
+        image: `${BASE}pinga-showcase.png`,
     },
 ];
 
@@ -97,18 +110,26 @@ function Particles({ dark }) {
         const ctx = canvas.getContext("2d");
         let w, h;
 
+        // Size the backing store to the device pixel ratio so dots stay crisp on
+        // retina displays, then scale the context back to CSS pixels.
         const resize = () => {
-            w = canvas.width = canvas.offsetWidth;
-            h = canvas.height = canvas.offsetHeight;
+            const dpr = Math.min(window.devicePixelRatio || 1, 2);
+            w = canvas.offsetWidth;
+            h = canvas.offsetHeight;
+            canvas.width = Math.round(w * dpr);
+            canvas.height = Math.round(h * dpr);
+            ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
         };
         resize();
         window.addEventListener("resize", resize);
 
+        // Seed inside the visible canvas — otherwise most particles start far
+        // off-screen and take a long time to drift into view.
         if (particlesRef.current.length === 0) {
             for (let i = 0; i < 50; i++) {
                 particlesRef.current.push({
-                    x: Math.random() * 2000,
-                    y: Math.random() * 5000,
+                    x: Math.random() * w,
+                    y: Math.random() * h,
                     r: Math.random() * 2 + 0.5,
                     dx: (Math.random() - 0.5) * 0.4,
                     dy: (Math.random() - 0.5) * 0.3,
@@ -117,12 +138,16 @@ function Particles({ dark }) {
             }
         }
 
+        const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
         const draw = () => {
             ctx.clearRect(0, 0, w, h);
             const ps = particlesRef.current;
             for (const p of ps) {
-                p.x += p.dx;
-                p.y += p.dy;
+                if (!reduceMotion) {
+                    p.x += p.dx;
+                    p.y += p.dy;
+                }
                 if (p.x < 0) p.x = w;
                 if (p.x > w) p.x = 0;
                 if (p.y < 0) p.y = h;
@@ -151,11 +176,17 @@ function Particles({ dark }) {
                     }
                 }
             }
-            animRef.current = requestAnimationFrame(draw);
+            if (!reduceMotion) animRef.current = requestAnimationFrame(draw);
         };
         draw();
+
+        // With reduced motion the loop is not running, so repaint on resize.
+        const redrawOnResize = () => { if (reduceMotion) draw(); };
+        window.addEventListener("resize", redrawOnResize);
+
         return () => {
             window.removeEventListener("resize", resize);
+            window.removeEventListener("resize", redrawOnResize);
             cancelAnimationFrame(animRef.current);
         };
     }, [dark]);
@@ -236,6 +267,26 @@ export default function Portfolio() {
     const [activeSection, setActiveSection] = useState("home");
     const [previewOpen, setPreviewOpen] = useState({});
 
+    // Restore the visitor's last choice, falling back to their OS preference.
+    // Runs after mount so the server-rendered markup and first client render match.
+    useEffect(() => {
+        try {
+            const saved = localStorage.getItem("theme");
+            if (saved === "dark" || saved === "light") {
+                setDark(saved === "dark");
+                return;
+            }
+        } catch { /* storage blocked — fall through to the OS preference */ }
+        if (window.matchMedia("(prefers-color-scheme: light)").matches) setDark(false);
+    }, []);
+
+    useEffect(() => {
+        try { localStorage.setItem("theme", dark ? "dark" : "light"); } catch { /* ignore */ }
+        document.documentElement.style.colorScheme = dark ? "dark" : "light";
+        const meta = document.querySelector('meta[name="theme-color"]');
+        if (meta) meta.setAttribute("content", dark ? "#09090b" : "#fafafa");
+    }, [dark]);
+
     useEffect(() => {
         const obs = new IntersectionObserver(
             (entries) => { for (const e of entries) { if (e.isIntersecting) setActiveSection(e.target.id); } },
@@ -248,7 +299,9 @@ export default function Portfolio() {
 
     const bg = dark ? "#09090b" : "#fafafa";
     const text = dark ? "#f4f4f5" : "#18181b";
-    const muted = dark ? "#71717a" : "#a1a1aa";
+    // Body copy uses `muted`, so it has to clear WCAG AA against `bg`.
+    // The previous pair (#71717a / #a1a1aa) was ~4.0:1 and ~2.3:1 — both failing.
+    const muted = dark ? "#a1a1aa" : "#52525b";
     const subtle = dark ? "#27272a" : "#e4e4e7";
     const card = dark ? "#18181b" : "#ffffff";
     const accent = "#10b981";
@@ -280,6 +333,15 @@ export default function Portfolio() {
           .show-mobile { display: flex !important; }
           .hero-heading { font-size: 48px !important; }
           .section-heading { font-size: 32px !important; }
+        }
+        @media (prefers-reduced-motion: reduce) {
+          html { scroll-behavior: auto; }
+          .marquee-track { animation: none; }
+          *, *::before, *::after {
+            animation-duration: 0.001ms !important;
+            animation-iteration-count: 1 !important;
+            transition-duration: 0.001ms !important;
+          }
         }
       `}</style>
 
@@ -370,7 +432,7 @@ export default function Portfolio() {
                 <div style={{ maxWidth: 1100, margin: "0 auto", padding: "120px 24px 80px", width: "100%", position: "relative", zIndex: 1 }}>
                     <Reveal>
                         <p className="mono" style={{ color: accent, fontSize: 13, letterSpacing: "0.15em", textTransform: "uppercase", marginBottom: 20 }}>
-                            Junior Software Engineer
+                            Software Engineer · Lisbon
                         </p>
                     </Reveal>
                     <Reveal delay={0.1}>
@@ -385,25 +447,43 @@ export default function Portfolio() {
                         </h1>
                     </Reveal>
                     <Reveal delay={0.2}>
-                        <p style={{ color: muted, fontSize: "clamp(16px, 2vw, 20px)", maxWidth: 520, lineHeight: 1.7, marginBottom: 36 }}>
-                            I build robust backend services and internal tooling with Kotlin and Java. Currently at ComplyAdvantage on the Migration Tooling team, enabling reliable and scalable automated system migrations.
+                        <p style={{ color: muted, fontSize: "clamp(16px, 2vw, 20px)", maxWidth: 540, lineHeight: 1.7, marginBottom: 36 }}>
+                            I build distributed systems in the financial crime and automotive compliance domains — Java, Kotlin and Spring Boot, on AWS with PostgreSQL and Kubernetes. Currently at ComplyAdvantage on the Migration Tooling team.
                         </p>
                     </Reveal>
                     <Reveal delay={0.3}>
-                        <div style={{ display: "flex", gap: 16, flexWrap: "wrap" }}>
+                        <div style={{ display: "flex", gap: 16, flexWrap: "wrap", alignItems: "center" }}>
                             <MagButton href="#experience" variant="primary" dark={dark}>
                                 View Work
                                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><path d="M5 12h14M12 5l7 7-7 7" /></svg>
                             </MagButton>
                             <MagButton href="#contact" variant="outline" dark={dark}>Get in Touch</MagButton>
+                            <a
+                                href={`${BASE}cv-joao-souza-e-silva.pdf`}
+                                download
+                                className="mono"
+                                style={{ display: "inline-flex", alignItems: "center", gap: 8, fontSize: 11, color: muted, textDecoration: "none", letterSpacing: "0.1em", textTransform: "uppercase", padding: "14px 4px", transition: "color 0.3s" }}
+                                onMouseEnter={(e) => { e.currentTarget.style.color = accent; }}
+                                onMouseLeave={(e) => { e.currentTarget.style.color = muted; }}
+                            >
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                    <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4" />
+                                    <polyline points="7 10 12 15 17 10" />
+                                    <line x1="12" y1="15" x2="12" y2="3" />
+                                </svg>
+                                Download CV
+                            </a>
                         </div>
                     </Reveal>
-                    <div style={{ position: "absolute", bottom: 40, left: "50%", transform: "translateX(-50%)", animation: "float 2.5s ease-in-out infinite", opacity: 0.4 }}>
-                        <svg width="20" height="30" viewBox="0 0 20 30" fill="none">
-                            <rect x="1" y="1" width="18" height="28" rx="9" stroke={muted} strokeWidth="1.5" />
-                            <circle cx="10" cy="10" r="2.5" fill={accent}><animate attributeName="cy" values="10;18;10" dur="2s" repeatCount="indefinite" /></circle>
-                        </svg>
-                    </div>
+                </div>
+
+                {/* Anchored to the section, not the content column, so it sits at
+                    the bottom of the viewport rather than under the buttons. */}
+                <div className="hide-mobile" style={{ position: "absolute", bottom: 40, left: "50%", transform: "translateX(-50%)", animation: "float 2.5s ease-in-out infinite", opacity: 0.4, zIndex: 1 }}>
+                    <svg width="20" height="30" viewBox="0 0 20 30" fill="none">
+                        <rect x="1" y="1" width="18" height="28" rx="9" stroke={muted} strokeWidth="1.5" />
+                        <circle cx="10" cy="10" r="2.5" fill={accent}><animate attributeName="cy" values="10;18;10" dur="2s" repeatCount="indefinite" /></circle>
+                    </svg>
                 </div>
             </section>
 
@@ -413,7 +493,8 @@ export default function Portfolio() {
                     {[...Array(2)].flatMap((_, i) =>
                         [
                             { v: "3+", l: "Years Experience" }, { v: "4", l: "Companies" }, { v: "MSc", l: "CS & Engineering" },
-                            { v: "12+", l: "Years Handball" }, { v: "Kotlin", l: "Primary Language" }, { v: "CA", l: "Current Company" },
+                            { v: "17/20", l: "MSc Final Grade" }, { v: "10", l: "Years Handball" }, { v: "5", l: "Seasons Coaching" },
+                            { v: "JVM", l: "Java & Kotlin" }, { v: "Lisbon", l: "Based In" },
                         ].map((s, j) => (
                             <div key={`${i}-${j}`} style={{ display: "flex", alignItems: "center", gap: 12 }}>
                                 <span style={{ fontWeight: 800, fontSize: 28, color: accent }}>{s.v}</span>
@@ -434,9 +515,9 @@ export default function Portfolio() {
                 <div className="grid-responsive" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 60 }}>
                     <Reveal delay={0.1}>
                         <div style={{ display: "flex", flexDirection: "column", gap: 20, color: muted, fontSize: 16, lineHeight: 1.8 }}>
-                            <p>I'm a software engineer based in Lisbon, Portugal, with a passion for building reliable, performant backend systems. Currently at ComplyAdvantage on the Migration Tooling team, I build backend services and internal tooling that enable reliable, scalable, and automated system migrations.</p>
-                            <p>My path started with a curiosity for programming in high school, leading me to both a BSc and MSc in Computer Science at NOVA SST. Along the way, I interned at Mercedes-Benz.io with Kotlin and Spring Boot, and spent time as a fullstack developer at Sandbit.</p>
-                            <p>Beyond code, I've been a competitive handball player since 2013 and coached kids for five years. Sports taught me discipline, teamwork, and how to stay calm under pressure — skills that translate directly into how I approach software.</p>
+                            <p>I'm a software engineer based in Lisbon, Portugal, building distributed systems in two compliance-heavy domains: financial crime and automotive emissions. The stack is Java, Kotlin and Spring Boot, running on AWS with PostgreSQL and Kubernetes.</p>
+                            <p>At ComplyAdvantage I work on Migration Tooling, building the compatibility layer that lets existing customers move onto our next-generation screening platform without touching their own integrations. Before that I built emissions services for the BMW Group at Critical TechWorks. My path there ran through a BSc and MSc in Computer Science at NOVA SST, an internship at Mercedes-Benz.io, and a couple of years part-time at Sandbit.</p>
+                            <p>Ten years playing handball at national level and five coaching children taught me most of what I know about working in a team — how to keep a group moving, and how to stay calm when the plan stops working.</p>
                         </div>
                     </Reveal>
                     <Reveal delay={0.2}>
@@ -485,7 +566,7 @@ export default function Portfolio() {
                                 <h2 className="section-heading" style={{ fontWeight: 800, fontSize: "clamp(32px, 5vw, 52px)", letterSpacing: "-0.02em" }}>Where I've worked</h2>
                             </div>
                             <a
-                                href="/my-portfolio/cv-joao-souza-e-silva.pdf"
+                                href={`${BASE}cv-joao-souza-e-silva.pdf`}
                                 download
                                 className="mono"
                                 style={{
@@ -528,9 +609,9 @@ export default function Portfolio() {
                                     <div style={{
                                         position: "absolute", left: -40, top: 6,
                                         width: 13, height: 13,
-                                        background: e.current ? accent : (dark ? "#27272a" : "#e4e4e7"),
+                                        background: e.current ? accent : (e.offPitch ? "transparent" : (dark ? "#27272a" : "#e4e4e7")),
                                         borderRadius: "50%",
-                                        border: `2px solid ${e.current ? accent : (dark ? "#3f3f46" : "#d4d4d8")}`,
+                                        border: `2px ${e.offPitch ? "dashed" : "solid"} ${e.current ? accent : (dark ? "#3f3f46" : "#d4d4d8")}`,
                                         boxShadow: e.current ? `0 0 12px rgba(16,185,129,0.5)` : "none",
                                         transition: "background 0.5s, border-color 0.5s",
                                         zIndex: 1,
@@ -538,8 +619,8 @@ export default function Portfolio() {
 
                                     <div
                                         style={{
-                                            background: card,
-                                            border: `1px solid ${e.current ? "rgba(16,185,129,0.3)" : subtle}`,
+                                            background: e.offPitch ? "transparent" : card,
+                                            border: `1px ${e.offPitch ? "dashed" : "solid"} ${e.current ? "rgba(16,185,129,0.3)" : subtle}`,
                                             padding: "28px 32px",
                                             transition: "background 0.5s, border-color 0.3s",
                                             position: "relative",
@@ -548,11 +629,13 @@ export default function Portfolio() {
                                         onMouseEnter={(ev) => { ev.currentTarget.style.borderColor = accent; }}
                                         onMouseLeave={(ev) => { ev.currentTarget.style.borderColor = e.current ? "rgba(16,185,129,0.3)" : subtle; }}
                                     >
-                                        <div style={{
-                                            position: "absolute", top: 0, left: 0, width: 3, height: "100%",
-                                            background: e.current ? accent : subtle,
-                                            transition: "background 0.5s",
-                                        }} />
+                                        {!e.offPitch && (
+                                            <div style={{
+                                                position: "absolute", top: 0, left: 0, width: 3, height: "100%",
+                                                background: e.current ? accent : subtle,
+                                                transition: "background 0.5s",
+                                            }} />
+                                        )}
 
                                         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: 12, marginBottom: 12 }}>
                                             <div>
@@ -569,13 +652,23 @@ export default function Portfolio() {
                                                             Current
                                                         </span>
                                                     )}
+                                                    {e.offPitch && (
+                                                        <span className="mono" style={{
+                                                            display: "inline-flex", alignItems: "center", gap: 5,
+                                                            fontSize: 10, color: muted,
+                                                            border: `1px dashed ${dark ? "#3f3f46" : "#d4d4d8"}`,
+                                                            padding: "2px 8px", letterSpacing: "0.08em", textTransform: "uppercase",
+                                                        }}>
+                                                            Off the pitch
+                                                        </span>
+                                                    )}
                                                 </div>
-                                                <p className="mono" style={{ fontSize: 13, color: accent, letterSpacing: "0.04em" }}>{e.company}</p>
+                                                <p className="mono" style={{ fontSize: 13, color: e.offPitch ? muted : accent, letterSpacing: "0.04em" }}>{e.company}</p>
                                             </div>
                                             <span className="mono" style={{ fontSize: 11, color: muted, letterSpacing: "0.08em", whiteSpace: "nowrap", paddingTop: 2 }}>{e.period}</span>
                                         </div>
 
-                                        <p style={{ color: muted, fontSize: 15, lineHeight: 1.7, marginBottom: 18, maxWidth: 560 }}>{e.description}</p>
+                                        <p style={{ color: muted, fontSize: 15, lineHeight: 1.7, marginBottom: 18, maxWidth: 640 }}>{e.description}</p>
 
                                         <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
                                             {e.tech.map((t) => (
